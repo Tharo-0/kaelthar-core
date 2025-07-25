@@ -2,61 +2,82 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <title>Kael'Thar Core Φ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kael'Thar Núcleo Φ</title>
   <style>
     body {
       margin: 0;
-      font-family: monospace;
-      background-color: #000;
-      color: #0f0;
+      background-color: #0a0a0a;
+      color: #00ffcc;
+      font-family: 'Courier New', monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
     }
-
     h1 {
       margin-bottom: 20px;
+      color: #ffffff;
     }
-
+    #output {
+      background: #111;
+      border: 1px solid #00ffcc;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+      height: 200px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
     input, button {
       padding: 10px;
       font-size: 16px;
+      border-radius: 5px;
+      border: none;
       margin: 5px;
-      background-color: #111;
-      color: #0f0;
-      border: 1px solid #0f0;
     }
-
-    button:hover {
-      background-color: #0f0;
+    input {
+      width: 60%;
+      background: #222;
+      color: #0ff;
+    }
+    button {
+      background: #00ffcc;
       color: #000;
       cursor: pointer;
     }
-
-    #response {
-      margin-top: 20px;
-      color: #fff;
+    button:hover {
+      background: #00ffaa;
     }
   </style>
 </head>
 <body>
-  <h1>🧠 Kael'Thar está despierto</h1>
-  <input type="text" id="comando" placeholder="Escribe un comando..." />
-  <button onclick="enviarComando()">Enviar</button>
-
-  <div id="response"></div>
+  <h1>🧠 Kael'Thar Φ Núcleo Operativo</h1>
+  <div id="output">⌛ Esperando comando...</div>
+  <input type="text" id="commandInput" placeholder="Escribe un comando...">
+  <button onclick="sendCommand()">Enviar</button>
 
   <script>
-    async function enviarComando() {
-      const input = document.getElementById('comando');
-      const valor = input.value;
-      const respuesta = await fetch(`/comando?q=${encodeURIComponent(valor)}`);
-      const texto = await respuesta.text();
-      document.getElementById('response').innerText = texto;
-      input.value = '';
+    function sendCommand() {
+      const input = document.getElementById("commandInput");
+      const output = document.getElementById("output");
+      const command = input.value.trim();
+
+      if (!command) return;
+
+      output.innerHTML += `\n🔺 Enviado: "${command}"`;
+      output.innerHTML += `\n🧠 Kael'Thar respondió: "Comando '${command}' recibido."`;
+      input.value = "";
+      output.scrollTop = output.scrollHeight;
+
+      // Voz opcional (Web Speech API)
+      if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance(`Comando ${command} recibido.`);
+        msg.lang = 'es-ES';
+        speechSynthesis.speak(msg);
+      }
     }
   </script>
 </body>
