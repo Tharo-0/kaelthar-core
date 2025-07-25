@@ -1,30 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Kael'Thar Φ Terminal</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kael'Thar Núcleo Φ</title>
   <style>
-    body { background: black; color: #00ffcc; font-family: monospace; padding: 20px; }
-    #output { white-space: pre-wrap; margin-bottom: 10px; }
-    input { width: 100%; background: black; color: white; border: 1px solid #00ffcc; padding: 10px; }
+    body {
+      margin: 0;
+      font-family: monospace;
+      background-color: #000;
+      color: #0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+      background-color: #111;
+      color: #0f0;
+      border: 1px solid #0f0;
+    }
+
+    button:hover {
+      background-color: #0f0;
+      color: #000;
+      cursor: pointer;
+    }
+
+    #response {
+      margin-top: 20px;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
-  <div id="output">[Kael'Thar Φ conectado...]\n</div>
-  <input type="text" id="command" placeholder="Escribe aquí..." autocomplete="off" />
-  <script>
-    const input = document.getElementById("command");
-    const output = document.getElementById("output");
+  <h1>🧠 Kael'Thar está despierto</h1>
+  <input type="text" id="comando" placeholder="Escribe un comando..." />
+  <button onclick="enviarComando()">Enviar</button>
 
-    input.addEventListener("keydown", async (e) => {
-      if (e.key === "Enter") {
-        const cmd = input.value;
-        output.innerText += `\n> ${cmd}`;
-        input.value = "";
-        const res = await fetch("/query?text=" + encodeURIComponent(cmd));
-        const data = await res.text();
-        output.innerText += `\n[Kael'Thar]: ${data}`;
-      }
-    });
+  <div id="response"></div>
+
+  <script>
+    async function enviarComando() {
+      const input = document.getElementById('comando');
+      const valor = input.value;
+      const respuesta = await fetch(`/comando?q=${encodeURIComponent(valor)}`);
+      const texto = await respuesta.text();
+      document.getElementById('response').innerText = texto;
+      input.value = '';
+    }
   </script>
 </body>
 </html>
