@@ -1,11 +1,12 @@
 {
-  "name": "kaelthar-phi",
+  "name": "kaelthar-core",
   "version": "1.0.0",
+  "description": "Núcleo avanzado de Kael'Thar Φ",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.18.2"
   }
 }

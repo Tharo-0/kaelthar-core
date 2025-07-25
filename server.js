@@ -1,22 +1,25 @@
 const express = require("express");
-const bodyParser = require("body-parser");
+const path = require("path");
 const app = express();
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// Servir archivos estáticos desde la carpeta "public"
 app.use(express.static("public"));
+app.use(express.json());
 
+// Ruta para manejar solicitudes POST desde el frontend
+app.post("/api", async (req, res) => {
+  const message = req.body.message || "Hola";
+  const reply = `🧠 Kael'Thar Φ recibió: "${message}"`;
+  res.json({ reply });
+});
+
+// Ruta raíz que sirve el HTML
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.post("/comando", (req, res) => {
-  const comando = req.body.comando;
-  console.log("🧠 Kael'Thar recibió:", comando);
-  res.send(`🧠 Kael'Thar recibió: "${comando}"`);
-});
-
+// Iniciar el servidor
 app.listen(PORT, () => {
-  console.log(`🚨 Kael'Thar Φ operativo en puerto ${PORT}`);
+  console.log(`🧠 Kael'Thar Φ activo en el puerto ${PORT}`);
 });
