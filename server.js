@@ -1,21 +1,22 @@
-const express = require('express');
+const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
-
-// Puerto definido por Render o por defecto en local
 const PORT = process.env.PORT || 10000;
 
-// Ruta raíz
-app.get('/', (req, res) => {
-  res.send("Kael'Thar está despierto. 🧠✨");
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
 });
 
-// Ruta de comandos
-app.get('/comando', (req, res) => {
-  const pregunta = req.query.q || "Sin comando recibido.";
-  res.send(`🧠 Kael'Thar recibió: "${pregunta}"`);
+app.post("/comando", (req, res) => {
+  const comando = req.body.comando;
+  console.log("🧠 Kael'Thar recibió:", comando);
+  res.send(`🧠 Kael'Thar recibió: "${comando}"`);
 });
 
-// Activar servidor
 app.listen(PORT, () => {
-  console.log(`🚨 Kael'Thar Φ escuchando en el puerto ${PORT}`);
+  console.log(`🚨 Kael'Thar Φ operativo en puerto ${PORT}`);
 });
