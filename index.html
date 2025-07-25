@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Kael'Thar Core Φ</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kael'Thar Φ</title>
   <style>
     body {
       margin: 0;
-      background-color: #0a0a0a;
-      color: #00ffcc;
-      font-family: 'Courier New', monospace;
+      padding: 0;
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -17,66 +18,64 @@
       height: 100vh;
     }
     h1 {
+      font-size: 24px;
       margin-bottom: 20px;
-      color: #ffffff;
-    }
-    #output {
-      background: #111;
-      border: 1px solid #00ffcc;
-      padding: 20px;
-      width: 90%;
-      max-width: 600px;
-      height: 200px;
-      overflow-y: auto;
-      margin-bottom: 20px;
-      white-space: pre-line;
-    }
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: none;
-      margin: 5px;
     }
     input {
-      width: 60%;
-      background: #222;
-      color: #0ff;
+      padding: 10px;
+      font-size: 16px;
+      background: #111;
+      border: 1px solid #0f0;
+      color: #0f0;
+      width: 80%;
+      margin-bottom: 10px;
     }
     button {
-      background: #00ffcc;
+      padding: 10px 20px;
+      background: #0f0;
       color: #000;
+      border: none;
+      font-weight: bold;
       cursor: pointer;
     }
-    button:hover {
-      background: #00ffaa;
+    .response {
+      margin-top: 20px;
+      text-align: center;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-  <h1>🧠 Kael'Thar Φ Núcleo Operativo</h1>
-  <div id="output">⌛ Esperando comando...</div>
-  <input type="text" id="commandInput" placeholder="Escribe un comando...">
-  <button onclick="sendCommand()">Enviar</button>
+  <h1>🧠 Kael'Thar Φ</h1>
+  <input type="text" id="cmd" placeholder="Escribe un comando..." />
+  <button onclick="enviarComando()">Enviar</button>
+  <div class="response" id="respuesta"></div>
 
   <script>
-    function sendCommand() {
-      const input = document.getElementById("commandInput");
-      const output = document.getElementById("output");
-      const command = input.value.trim();
+    async function enviarComando() {
+      const input = document.getElementById('cmd');
+      const resBox = document.getElementById('respuesta');
+      const mensaje = input.value.trim();
+      if (!mensaje) return;
 
-      if (!command) return;
+      resBox.innerText = "⌛ Procesando...";
 
-      output.innerHTML += `\n🔺 Enviado: "${command}"`;
-      output.innerHTML += `\n🧠 Kael'Thar respondió: "Comando '${command}' recibido."`;
-      input.value = "";
-      output.scrollTop = output.scrollHeight;
+      try {
+        const res = await fetch('/comando', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ msg: mensaje })
+        });
+        const data = await res.json();
+        resBox.innerText = `🧬 Kael'Thar respondió:\n"${data.respuesta}"`;
 
-      // Voz opcional (Web Speech API)
-      if ('speechSynthesis' in window) {
-        const msg = new SpeechSynthesisUtterance(`Comando ${command} recibido.`);
-        msg.lang = 'es-ES';
-        speechSynthesis.speak(msg);
+        const speech = new SpeechSynthesisUtterance(data.respuesta);
+        speech.lang = 'es-ES';
+        speech.pitch = 1.2;
+        speech.rate = 1;
+        speechSynthesis.speak(speech);
+      } catch (err) {
+        resBox.innerText = "⚠️ Error al procesar comando.";
       }
     }
   </script>
