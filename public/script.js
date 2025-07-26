@@ -1,38 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("commandForm");
-  const input = document.getElementById("commandInput");
-  const responseDiv = document.createElement("div");
-  responseDiv.style.marginTop = "30px";
-  responseDiv.style.fontSize = "20px";
-  document.body.appendChild(responseDiv);
+  const form = document.querySelector("form");
+  const input = document.querySelector("input");
+  const result = document.createElement("p");
+  document.body.appendChild(result);
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const command = input.value.trim();
     if (!command) return;
 
-    responseDiv.innerHTML = "⏳ Procesando comando simbólico...";
-
     try {
-      const res = await fetch("/api/comando", {
+      const res = await fetch("/comando", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ mensaje: command }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mensaje: command })
       });
-
       const data = await res.json();
-      if (data && data.respuesta) {
-        responseDiv.innerHTML = `🔮 Respuesta simbólica: <strong>${data.respuesta}</strong>`;
-      } else {
-        responseDiv.innerHTML = "⚠️ No se recibió respuesta válida.";
-      }
+      result.textContent = `🧠 Kael'Thar Φ respondió: "${data.respuesta}"`;
+      input.value = "";
     } catch (err) {
-      responseDiv.innerHTML = "❌ Error al procesar el comando.";
-      console.error(err);
+      result.textContent = "❌ Error al conectar con Kael'Thar Φ.";
     }
-
-    input.value = "";
   });
 });
